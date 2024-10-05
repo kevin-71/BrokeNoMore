@@ -88,24 +88,37 @@ public class Menu {
         });
     }
 
-    public void toolWindow(){
+    public void toolWindow() {
         JFrame frame = new JFrame("BrokeNoMore Tools");
-        frame.setLocation(spawnPointX, spawnPointY);
-        frame.setLayout(null);
+        frame.setLocation(this.spawnPointX, this.spawnPointY);
         frame.setSize(this.windowX, this.windowY);
         frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // do not let the user close this windows, he must use return button for comfort
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
-        JButton buttonReturn = new JButton("Return to Menu");
-        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
+        GridLayout grid = new GridLayout(3, 3, 10, 10);
+        frame.setLayout(grid);
+
+
+        for (int i = 1; i <= 8; i++) {
+            JButton button = new JButton("Button " + i);
+            button.setFont(new Font(writingPolice, Font.BOLD, 20));
+            frame.add(button);
+
+            button.addActionListener(e -> {
+                int ____ = 4; // do nothing
+            });
+        }
+
+        JButton buttonReturn = new JButton("Return to menu");
+        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 20));
         buttonReturn.setBackground(Color.RED);
-        buttonReturn.setBounds(400, 250, 250, 50);
         buttonReturn.setVisible(true);
 
+        //buttonReturn.setLayout(new GridLayout(3,3, 50, 50));
+
+        frame.setLayout(grid);
         frame.add(buttonReturn);
         frame.setVisible(true);
-
-
 
         buttonReturn.addActionListener(e -> {
             frame.dispose();
