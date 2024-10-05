@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -20,6 +21,8 @@ public class Menu {
 
     public String writingPolice = "Times New Roman";
 
+    private double userMoney = 1784.22;
+
     public void menuLauncher(){
         JFrame frame = new JFrame("BrokeNoMore Manager");
         frame.setLocation(spawnPointX, spawnPointY);
@@ -32,7 +35,8 @@ public class Menu {
         titleLabel.setFont(new Font(writingPolice, Font.BOLD, 30));
         titleLabel.setBounds(300,10,300,30);
 
-        JButton moneyButton = new JButton("1784.22$"); // disguising a button into a label so we can click the money to print details
+        JButton moneyButton = new JButton(Double.toString(this.userMoney)+"$"); // disguising a button into a label so we can click the money to print details
+
         moneyButton.setFont(new Font(writingPolice, Font.PLAIN, 50));
         moneyButton.setHorizontalAlignment(SwingConstants.CENTER);
         moneyButton.setVerticalAlignment(SwingConstants.CENTER);
@@ -55,6 +59,14 @@ public class Menu {
         buttonTool.setBounds(50, 250,250, 50);
         buttonTool.setVisible(true);
 
+        JButton buttonClose = new JButton("Close");
+        buttonClose.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonClose.setBackground(Color.RED);
+        buttonClose.setBounds(400, 250, 250, 50);
+        buttonClose.setVisible(true);
+
+
+        frame.add(buttonClose);
         frame.add(buttonTool);
         frame.add(titleLabel);
         frame.add(panelBalance);
@@ -68,6 +80,11 @@ public class Menu {
         moneyButton.addActionListener(e -> {
             frame.dispose();
             moneyWindow();
+        });
+
+        buttonClose.addActionListener(e ->{
+            frame.dispose();
+            System.exit(0); // stop the java program from running
         });
     }
 
@@ -97,14 +114,21 @@ public class Menu {
     }
 
     public void moneyWindow(){
-        JFrame frame = new JFrame("Money Viewer");
+        JFrame frame = new JFrame("Asset Viewer");
         frame.setLocation(spawnPointX, spawnPointY);
         frame.setLayout(null);
         frame.setSize(this.windowX, this.windowY);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // do not let the user close this windows, he must use return button for comfort
 
-        String moneyRepartition[][] = {{"1", "In-Bank Money", "1500$", "1500$"},
+        JLabel moneyLabel = new JLabel("Total : ");
+
+        JLabel titleLabel = new JLabel("Asset Viewer");
+        titleLabel.setFont(new Font(writingPolice, Font.BOLD, 30));
+        //titleLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+        titleLabel.setBounds(250,10,300,30);
+
+        String[][] moneyRepartition = {{"1", "In-Bank", "1500$", "1500$"},
                 {"2", "Cash", "51.18$", "51.18$"},
                 {"3", "Euro", "20€", "22.09$"},
                 {"4", "Gold", "0.035 oz", "12.97$"},
@@ -116,13 +140,31 @@ public class Menu {
         JTable tableMoney = new JTable(moneyRepartition, column);
         tableMoney.setSize(500,250);
         tableMoney.setPreferredSize(new Dimension(500,500));
-        tableMoney.setBounds(50, 50, windowX - 100, windowY - 100);
+        tableMoney.setBounds(50, 50, windowX - 150, windowY - 150);
         JScrollPane scrollPane = new JScrollPane(tableMoney);
-        //tableMoney.setFont(new Font(writingPolice, Font.BOLD, 30));
 
+        tableMoney.getColumnModel().getColumn(0).setPreferredWidth(20);
+
+        tableMoney.setRowHeight(40);
+        tableMoney.setFont(new Font(writingPolice, Font.BOLD, 30));
+
+        JButton buttonReturn = new JButton("Return to Menu");
+        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonReturn.setBackground(Color.RED);
+        buttonReturn.setBounds(400, 250, 250, 50);
+        buttonReturn.setVisible(true);
+
+        titleLabel.setVisible(true);
+        frame.add(titleLabel);
+        frame.add(buttonReturn);
         frame.add(scrollPane);
         frame.add(tableMoney);
         frame.setVisible(true);
+
+        buttonReturn.addActionListener(e -> {
+            frame.dispose();
+            menuLauncher();
+        });
     }
 
     public static void main(String[] args) {
