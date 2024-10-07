@@ -2,8 +2,10 @@ import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.EventListener;
 
 public class Menu {
     public int windowX = 700;
@@ -23,12 +25,20 @@ public class Menu {
 
     private double userMoney = 1784.22;
 
-    public void menuLauncher(){
-        JFrame frame = new JFrame("BrokeNoMore Manager");
+
+    public JFrame createFrame(String frameName, LayoutManager layout){  // auto frame creator so all the frame has the same size properties
+        JFrame frame = new JFrame(frameName);
         frame.setLocation(spawnPointX, spawnPointY);
-        frame.setLayout(null);
+        frame.setLayout(layout);
         frame.setSize(this.windowX, this.windowY);
         frame.setResizable(false);
+        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        frame.setVisible(true);
+        return frame;
+    }
+
+    public void menuLauncher(){
+        JFrame frame = createFrame("BrokeNoMore Manager", null);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JLabel titleLabel = new JLabel("Balance");
@@ -70,7 +80,7 @@ public class Menu {
         frame.add(buttonTool);
         frame.add(titleLabel);
         frame.add(panelBalance);
-        frame.setVisible(true);
+        //frame.setVisible(true);
 
         buttonTool.addActionListener(e -> {
             frame.dispose();
@@ -89,50 +99,44 @@ public class Menu {
     }
 
     public void toolWindow() {
-        JFrame frame = new JFrame("BrokeNoMore Tools");
-        frame.setLocation(this.spawnPointX, this.spawnPointY);
-        frame.setSize(this.windowX, this.windowY);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        JFrame frame = createFrame("BrokeNoMore Tools", null);
 
         GridLayout grid = new GridLayout(3, 3, 10, 10);
         frame.setLayout(grid);
 
+        String[] buttonNames = {"Converter", "button 2", "button 3", "button 4", "e", "d", "d", "r", "Return to menu"};
+        Color[] colors = {Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED};
+        ActionListener[] eventListeners = {
+                e -> {
+                    frame.dispose();
+                    converterWindow();
+                },
 
-        for (int i = 1; i <= 8; i++) {
-            JButton button = new JButton("Button " + i);
+                e -> System.out.println("Button 2 clicked"),
+                e -> System.out.println("Button 3 clicked"),
+                e -> System.out.println("Button 4 clicked"),
+                e -> System.out.println("Button e clicked"),
+                e -> System.out.println("Button d clicked"),
+                e -> System.out.println("Button d clicked"),
+                e -> System.out.println("Button r clicked"),
+                
+                e -> {frame.dispose();
+                    menuLauncher();}
+        };
+
+        for (int i = 1; i <= 9; i++) {
+            JButton button = new JButton(buttonNames[i-1]);
             button.setFont(new Font(writingPolice, Font.BOLD, 20));
+            button.setBackground(colors[i-1]);
             frame.add(button);
 
-            button.addActionListener(e -> {
-                int ____ = 4; // do nothing
-            });
+            button.addActionListener(eventListeners[i-1]);
         }
-
-        JButton buttonReturn = new JButton("Return to menu");
-        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 20));
-        buttonReturn.setBackground(Color.RED);
-        buttonReturn.setVisible(true);
-
-        //buttonReturn.setLayout(new GridLayout(3,3, 50, 50));
-
-        frame.setLayout(grid);
-        frame.add(buttonReturn);
         frame.setVisible(true);
-
-        buttonReturn.addActionListener(e -> {
-            frame.dispose();
-            menuLauncher();
-        });
     }
 
     public void moneyWindow(){
-        JFrame frame = new JFrame("Asset Viewer");
-        frame.setLocation(spawnPointX, spawnPointY);
-        frame.setLayout(null);
-        frame.setSize(this.windowX, this.windowY);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // do not let the user close this windows, he must use return button for comfort
+        JFrame frame = createFrame("Asset Viewer", null);
 
         JLabel moneyLabel = new JLabel("Total : ");
 
@@ -178,6 +182,10 @@ public class Menu {
             frame.dispose();
             menuLauncher();
         });
+    }
+
+    public void converterWindow(){
+        JFrame frame = createFrame("Convertor", null);
     }
 
     public static void main(String[] args) {
