@@ -105,7 +105,7 @@ public class Menu {
         frame.setLayout(grid);
 
         String[] buttonNames = {"Converter", "button 2", "button 3", "button 4", "e", "d", "d", "r", "Return to menu"};
-        Color[] colors = {Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED, Color.RED};
+        Color[] colors = {Color.GREEN, Color.YELLOW, Color.WHITE, Color.BLUE, Color.PINK, Color.CYAN, Color.GRAY, Color.ORANGE, Color.RED};
         ActionListener[] eventListeners = {
                 e -> {
                     frame.dispose();
@@ -119,7 +119,7 @@ public class Menu {
                 e -> System.out.println("Button d clicked"),
                 e -> System.out.println("Button d clicked"),
                 e -> System.out.println("Button r clicked"),
-                
+
                 e -> {frame.dispose();
                     menuLauncher();}
         };
@@ -186,6 +186,59 @@ public class Menu {
 
     public void converterWindow(){
         JFrame frame = createFrame("Convertor", null);
+
+        JButton buttonReturn = new JButton("Return to Tools");
+        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonReturn.setBackground(Color.RED);
+        buttonReturn.setBounds(400, 250, 250, 50);
+        buttonReturn.setVisible(true);
+        frame.add(buttonReturn);
+
+        JTextArea textArea = new JTextArea();
+        JTextArea textArea2 = new JTextArea();
+
+        textArea.setBounds(100, 110, 200, 50);
+        textArea.setFont(new Font(writingPolice, Font.BOLD, 30));
+        textArea2.setBounds(400, 110, 200, 50);
+        textArea2.setFont(new Font(writingPolice, Font.BOLD, 30));
+        textArea.setBorder(BorderFactory.createLineBorder(Color.black, 5, true));
+        textArea2.setBorder(BorderFactory.createLineBorder(Color.black, 5, true));
+
+        String[] listCurrencies = {"EUR", "USD", "GBP", "WON"};
+        JComboBox<String> currenciesBox = new JComboBox<>(listCurrencies);
+        JComboBox<String> currenciesBox2 = new JComboBox<>(listCurrencies);
+        currenciesBox2.setSelectedIndex(1);
+
+        currenciesBox.setFont(new Font(writingPolice, Font.BOLD, 30));
+        currenciesBox.setBounds(100, 40, 200, 50);
+
+        currenciesBox2.setFont(new Font(writingPolice, Font.BOLD, 30));
+        currenciesBox2.setBounds(400, 40, 200, 50);
+
+        frame.add(currenciesBox);
+        frame.add(currenciesBox2);
+
+        String userInput = textArea.getText();
+
+        JButton buttonConvert = new JButton("Convert");
+        buttonConvert.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonConvert.setBackground(Color.GREEN);
+
+        buttonConvert.setBounds(50, 250,250, 50);
+        buttonConvert.setVisible(true);
+
+        frame.add(buttonConvert);
+        frame.add(textArea);
+        frame.add(textArea2);
+
+        buttonConvert.addActionListener(e -> {
+            int _____ = 5; // do nothing !
+        });
+
+        buttonReturn.addActionListener(e -> {
+            frame.dispose();
+            toolWindow();
+        });
     }
 
     public static void main(String[] args) {
