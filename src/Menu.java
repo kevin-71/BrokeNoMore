@@ -242,7 +242,9 @@ public class Menu {
     }
 
     public static void main(String[] args) {
-        Menu menu = new Menu();
-        menu.menuLauncher();
+       SwingUtilities.invokeLater(() -> {
+           Menu menu = new Menu();
+           menu.menuLauncher();
+       });
     }
 }
