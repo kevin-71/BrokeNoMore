@@ -5,6 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="99fa654a-12dc-4a91-83dc-7b1f8f118dc7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BrokeNoMore/Menu$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BrokeNoMore/Menu$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/BrokeNoMore/Menu.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/BrokeNoMore/Menu.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Menu.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,7 +40,7 @@
     &quot;Application.Menu.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/kej04/Downloads/mariadb-java-client-3.4.1.jar&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -75,11 +79,23 @@
       <workItem from="1728271624526" duration="5350000" />
       <workItem from="1728336444529" duration="384000" />
       <workItem from="1728336841014" duration="6891000" />
-      <workItem from="1728440970468" duration="1210000" />
+      <workItem from="1728440970468" duration="2358000" />
+      <workItem from="1728444140350" duration="6641000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

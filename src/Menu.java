@@ -1,27 +1,36 @@
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.EventListener;
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+import static java.lang.Math.round;
 
 public class Menu {
 
     public String writingPolice = "Times New Roman";
-    int windowX = 600;
-    int windowY =350;
+    int windowX = 700;
+    int windowY = 350;
 
-    private double userMoney = 1784.22;
+    private double userMoneyDouble;
+    private String userMoney;
 
     //window
     JFrame frame;
     CardLayout cardLayout;
     JPanel panel;
 
+    // db
+    DB db = new DB();
 
-    public Menu(){
+
+    public Menu() throws SQLException {
+        userMoneyDouble = db.getMoney();
+        userMoney = String.format("%.2f", userMoneyDouble);
+
         //set up frame
         frame = new JFrame("BrokeNoMore");
         frame.setSize(this.windowX, this.windowY);
@@ -44,23 +53,18 @@ public class Menu {
         frame.add(panel);
 
         frame.setVisible(true);
-<<<<<<< HEAD
-=======
-
-
->>>>>>> b16bc871353dad824f1fec2d5608892ce70b30aa
     }
 
 
-    public JPanel menuLauncher(){
+    public JPanel menuLauncher() {
         // set menu panel
-        JPanel menuLauncher = new JPanel(new BorderLayout());
+        JPanel menuPanel = new JPanel(new BorderLayout());
 
         JLabel titleLabel = new JLabel("Balance");
         titleLabel.setFont(new Font(writingPolice, Font.BOLD, 30));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the title
 
-        JButton moneyButton = new JButton(Double.toString(this.userMoney)+"$");
+        JButton moneyButton = new JButton(this.userMoney + "$");
         moneyButton.setFont(new Font(writingPolice, Font.PLAIN, 50));
         moneyButton.setBackground(Color.GREEN); // Change button color to differentiate
 
@@ -85,18 +89,18 @@ public class Menu {
         buttonClose.setFont(new Font(writingPolice, Font.BOLD, 30));
         buttonClose.setBackground(Color.RED);
 
-        // Panel for the buttons close and tools
-        JPanel panelButtons = new JPanel(new GridLayout(1, 2));
+        JPanel panelButtons = new JPanel(new GridLayout(1, 2, 10, 0));
         panelButtons.add(buttonTool);
         panelButtons.add(buttonClose);
 
-        // Add the panels to the main menu
-        menuLauncher.add(Box.createVerticalStrut(windowY/6), BorderLayout.NORTH); // Add space at the top
-        menuLauncher.add(panelBalance, BorderLayout.CENTER); // Add balance to the center
-        menuLauncher.add(Box.createVerticalStrut(windowY/6), BorderLayout.NORTH); // Add space at the top
-        menuLauncher.add(panelButtons, BorderLayout.SOUTH);
+        buttonClose.setSize(250, 100);
+        buttonTool.setSize(250, 100);
 
-        // Action Listeners
+        panelButtons.setBorder(new EmptyBorder(20, 30, 20, 30));
+        menuPanel.add(panelBalance, BorderLayout.CENTER);
+        menuPanel.add(panelButtons, BorderLayout.SOUTH);
+
+
         buttonTool.addActionListener(e -> {
             cardLayout.show(panel, "ToolWindow");
         });
@@ -110,7 +114,7 @@ public class Menu {
             System.exit(0); // stop the Java program from running
         });
 
-        return menuLauncher;
+        return menuPanel;
     }
 
 
@@ -256,7 +260,11 @@ public class Menu {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new Menu(); // Crée une instance de Brouillon
+                try {
+                    new Menu(); // Crée une instance de Brouillon
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
