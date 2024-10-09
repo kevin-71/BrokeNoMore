@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static java.lang.Math.round;
 
@@ -32,7 +34,7 @@ public class Menu {
         userMoney = String.format("%.2f", userMoneyDouble);
 
         //set up frame
-        frame = new JFrame("BrokeNoMore");
+        frame = new JFrame("BrokeNoMore Manager");
         frame.setSize(this.windowX, this.windowY);
         frame.setLocationRelativeTo(null); // put the frame on the middle of the frame
         frame.setResizable(false);
@@ -59,6 +61,7 @@ public class Menu {
     public JPanel menuLauncher() {
         // set menu panel
         JPanel menuPanel = new JPanel(new BorderLayout());
+        //frame.setTitle("BrokeNoMore Manager");
 
         JLabel titleLabel = new JLabel("Balance");
         titleLabel.setFont(new Font(writingPolice, Font.BOLD, 30));
@@ -120,6 +123,7 @@ public class Menu {
 
     public JPanel toolWindow() {
         JPanel toolWindow = new JPanel();
+        //("BrokeNoMore Tools");
 
         GridLayout grid = new GridLayout(3, 3, 10, 10);
         toolWindow.setLayout(grid);
@@ -156,6 +160,7 @@ public class Menu {
 
     public JPanel moneyWindow(){
         JPanel moneyWindow = new JPanel(new BorderLayout());
+        //frame.setTitle("Asset Manager");
 
 
         JLabel titleLabel = new JLabel("Asset Viewer");
@@ -200,14 +205,8 @@ public class Menu {
     }
 
     public JPanel converterWindow(){
-        JPanel converterWindow = new JPanel();
-
-        JButton buttonReturn = new JButton("Return to Tools");
-        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
-        buttonReturn.setBackground(Color.RED);
-        buttonReturn.setBounds(400, 250, 250, 50);
-        buttonReturn.setVisible(true);
-        converterWindow.add(buttonReturn);
+        JPanel converterWindow = new JPanel(null);
+        //frame.setTitle("Converter");
 
         JTextArea textArea = new JTextArea();
         JTextArea textArea2 = new JTextArea();
@@ -218,6 +217,8 @@ public class Menu {
         textArea2.setFont(new Font(writingPolice, Font.BOLD, 30));
         textArea.setBorder(BorderFactory.createLineBorder(Color.black, 5, true));
         textArea2.setBorder(BorderFactory.createLineBorder(Color.black, 5, true));
+
+        textArea2.setEditable(false);
 
         String[] listCurrencies = {"EUR", "USD", "GBP", "WON"};
         JComboBox<String> currenciesBox = new JComboBox<>(listCurrencies);
@@ -235,33 +236,67 @@ public class Menu {
 
         String userInput = textArea.getText();
 
+        converterWindow.add(textArea);
+        converterWindow.add(textArea2);
+
         JButton buttonConvert = new JButton("Convert");
         buttonConvert.setFont(new Font(writingPolice, Font.BOLD, 30));
         buttonConvert.setBackground(Color.GREEN);
 
-        buttonConvert.setBounds(50, 250,250, 50);
+        JButton buttonReturn = new JButton("Return to tools");
+        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonReturn.setBackground(Color.RED);
+
+        buttonReturn.setBounds(400, 250, 250, 50);
+        buttonConvert.setBounds(50, 250, 250, 50);
+
+        buttonReturn.setVisible(true);
         buttonConvert.setVisible(true);
 
         converterWindow.add(buttonConvert);
-        converterWindow.add(textArea);
-        converterWindow.add(textArea2);
+        converterWindow.add(buttonReturn);
+
+
 
         buttonConvert.addActionListener(e -> {
-            int _____ = 5; // do nothing !
+            if (textArea.getText().isEmpty()){
+                return;
+            }
+            else if (textArea2.getText().matches("[a-zA-Z]+")){
+                textArea2.setText("Put only numbers !"); // doesnt' work
+            }
+
+            Map<String, Double> conversionRates = new HashMap<>();
+
+            conversionRates.put("EUR", 1.0); // 1 eur = 1 eur
+            conversionRates.put("USD", 1.09); // 1 eur = 1.09 usd
+            conversionRates.put("GBP", 0.84);
+            conversionRates.put("WON", 1474.5);
+
+            String startCurr = (String) currenciesBox.getSelectedItem();
+            String targetCurr = (String) currenciesBox2.getSelectedItem();
+            double amount = Double.parseDouble(textArea.getText());
+
+            double amountEur = amount / conversionRates.get(startCurr); // convert in EUR
+
+            double amountTarget = amountEur * conversionRates.get(targetCurr); // convert in the target currency
+
+            textArea2.setText(String.format("%.2f", amountTarget));
+
         });
 
         buttonReturn.addActionListener(e -> {
             cardLayout.show(panel, "ToolWindow");
         });
         return converterWindow;
-    }
+    }   
 
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    new Menu(); // Crée une instance de Brouillon
+                    new Menu();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }
