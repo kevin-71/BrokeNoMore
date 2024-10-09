@@ -44,6 +44,11 @@ public class Menu {
         frame.add(panel);
 
         frame.setVisible(true);
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> b16bc871353dad824f1fec2d5608892ce70b30aa
     }
 
 
