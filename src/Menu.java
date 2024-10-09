@@ -289,7 +289,7 @@ public class Menu {
             cardLayout.show(panel, "ToolWindow");
         });
         return converterWindow;
-    }   
+    }
 
 
     public static void main(String[] args) {
