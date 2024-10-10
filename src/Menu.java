@@ -59,6 +59,8 @@ public class Menu {
 
     public JPanel menuLauncher() throws SQLException {
 
+
+
         userMoneyDouble = db.getMoney();
         userMoney = String.format("%.2f", userMoneyDouble);
         // set menu panel
@@ -327,6 +329,12 @@ public class Menu {
         });
 
         return moneyWindow;
+    }
+
+    public void updateMoneyButton(JButton moneyButton) throws SQLException {
+        userMoneyDouble = db.getMoney();
+        userMoney = String.format("%.2f", userMoneyDouble);
+        moneyButton.setText(this.userMoney + "$");
     }
 
 
