@@ -65,22 +65,21 @@ public class Menu {
 
         JLabel titleLabel = new JLabel("Balance");
         titleLabel.setFont(new Font(writingPolice, Font.BOLD, 30));
-        titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // Center the title
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // center the title
 
         JButton moneyButton = new JButton(this.userMoney + "$");
         moneyButton.setFont(new Font(writingPolice, Font.PLAIN, 50));
-        moneyButton.setBackground(Color.GREEN); // Change button color to differentiate
+        moneyButton.setBackground(Color.GREEN); // set color
 
-        // Panel for the Balance, using BoxLayout to align along Y
         JPanel panelBalance = new JPanel();
         panelBalance.setLayout(new BoxLayout(panelBalance, BoxLayout.Y_AXIS));
         panelBalance.add(titleLabel);
 
-        // Add some spacing between the label and button
+        // add some spacing between the label and button
         panelBalance.add(Box.createVerticalStrut(10));
         panelBalance.add(moneyButton);
 
-        // Align components to the center
+        // align components to the center
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         moneyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -128,14 +127,16 @@ public class Menu {
         GridLayout grid = new GridLayout(3, 3, 10, 10);
         toolWindow.setLayout(grid);
 
-        String[] buttonNames = {"Converter", "button 2", "button 3", "button 4", "e", "d", "d", "r", "Return to menu"};
+        String[] buttonNames = {"Converter", "Add money", "button 3", "button 4", "e", "d", "d", "r", "Return to menu"};
         Color[] colors = {Color.GREEN, Color.YELLOW, Color.WHITE, Color.BLUE, Color.PINK, Color.CYAN, Color.GRAY, Color.ORANGE, Color.RED};
         ActionListener[] eventListeners = {
                 e -> {
                     cardLayout.show(panel, "ConverterWindow");
                 },
 
-                e -> System.out.println("Button 2 clicked"),
+                e -> {
+                    System.out.println("button add money clicked");
+                },
                 e -> System.out.println("Button 3 clicked"),
                 e -> System.out.println("Button 4 clicked"),
                 e -> System.out.println("Button e clicked"),
@@ -167,7 +168,7 @@ public class Menu {
         titleLabel.setFont(new Font(writingPolice, Font.BOLD, 30));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER)); // New JPanel to center
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         titlePanel.add(titleLabel);
 
         String[][] moneyRepartition = {{"1", "In-Bank", "1500$", "1500$"},
@@ -193,10 +194,10 @@ public class Menu {
         buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
         buttonReturn.setBackground(Color.RED);
 
-        titlePanel.setVisible(true); // Assurez-vous que le titlePanel est visible
-        moneyWindow.add(titlePanel, BorderLayout.NORTH); // Ajout du titlePanel
+        titlePanel.setVisible(true);
+        moneyWindow.add(titlePanel, BorderLayout.NORTH);
         moneyWindow.add(buttonReturn, BorderLayout.SOUTH);
-        moneyWindow.add(scrollPane, BorderLayout.CENTER); // Mettre scrollPane au centre
+        moneyWindow.add(scrollPane, BorderLayout.CENTER);
 
         buttonReturn.addActionListener(e -> {
             cardLayout.show(panel, "MenuLauncher");
@@ -220,7 +221,7 @@ public class Menu {
 
         textArea2.setEditable(false);
 
-        String[] listCurrencies = {"EUR", "USD", "GBP", "WON"};
+        String[] listCurrencies = {"EUR", "USD", "GBP", "WON", "CA"};
         JComboBox<String> currenciesBox = new JComboBox<>(listCurrencies);
         JComboBox<String> currenciesBox2 = new JComboBox<>(listCurrencies);
         currenciesBox2.setSelectedIndex(1);
@@ -272,6 +273,7 @@ public class Menu {
             conversionRates.put("USD", 1.09); // 1 eur = 1.09 usd
             conversionRates.put("GBP", 0.84);
             conversionRates.put("WON", 1474.5);
+            conversionRates.put("CA", 1.50);
 
             String startCurr = (String) currenciesBox.getSelectedItem();
             String targetCurr = (String) currenciesBox2.getSelectedItem();
@@ -281,7 +283,7 @@ public class Menu {
 
             double amountTarget = amountEur * conversionRates.get(targetCurr); // convert in the target currency
 
-            textArea2.setText(String.format("%.2f", amountTarget));
+            textArea2.setText(String.valueOf(amountTarget)); // convert double to string
 
         });
 
