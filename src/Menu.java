@@ -30,9 +30,6 @@ public class Menu {
 
 
     public Menu() throws SQLException {
-        userMoneyDouble = db.getMoney();
-        userMoney = String.format("%.2f", userMoneyDouble);
-
         //set up frame
         frame = new JFrame("BrokeNoMore Manager");
         frame.setSize(this.windowX, this.windowY);
@@ -47,20 +44,25 @@ public class Menu {
         JPanel toolWindow = toolWindow();
         JPanel moneyWindow = moneyWindow();
         JPanel converterWindow = converterWindow();
+        JPanel manageMoneyWindow = manageMoneyWindow();
 
         panel.add(menuLauncher, "MenuLauncher");
         panel.add(toolWindow, "ToolWindow");
         panel.add(moneyWindow, "MoneyWindow");
         panel.add(converterWindow, "ConverterWindow");
+        panel.add(manageMoneyWindow, "manageMoneyWindow");
         frame.add(panel);
 
         frame.setVisible(true);
     }
 
 
-    public JPanel menuLauncher() {
+    public JPanel menuLauncher() throws SQLException {
+
+        userMoneyDouble = db.getMoney();
+        userMoney = String.format("%.2f", userMoneyDouble);
         // set menu panel
-        JPanel menuPanel = new JPanel(new BorderLayout());
+        JPanel menuLauncher = new JPanel(new BorderLayout());
         //frame.setTitle("BrokeNoMore Manager");
 
         JLabel titleLabel = new JLabel("Balance");
@@ -99,8 +101,8 @@ public class Menu {
         buttonTool.setSize(250, 100);
 
         panelButtons.setBorder(new EmptyBorder(20, 30, 20, 30));
-        menuPanel.add(panelBalance, BorderLayout.CENTER);
-        menuPanel.add(panelButtons, BorderLayout.SOUTH);
+        menuLauncher.add(panelBalance, BorderLayout.CENTER);
+        menuLauncher.add(panelButtons, BorderLayout.SOUTH);
 
 
         buttonTool.addActionListener(e -> {
@@ -116,7 +118,7 @@ public class Menu {
             System.exit(0); // stop the Java program from running
         });
 
-        return menuPanel;
+        return menuLauncher;
     }
 
 
@@ -135,7 +137,7 @@ public class Menu {
                 },
 
                 e -> {
-                    System.out.println("button add money clicked");
+                    cardLayout.show(panel, "manageMoneyWindow");
                 },
                 e -> System.out.println("Button 3 clicked"),
                 e -> System.out.println("Button 4 clicked"),
@@ -251,9 +253,6 @@ public class Menu {
         buttonReturn.setBounds(400, 250, 250, 50);
         buttonConvert.setBounds(50, 250, 250, 50);
 
-        buttonReturn.setVisible(true);
-        buttonConvert.setVisible(true);
-
         converterWindow.add(buttonConvert);
         converterWindow.add(buttonReturn);
 
@@ -291,6 +290,43 @@ public class Menu {
             cardLayout.show(panel, "ToolWindow");
         });
         return converterWindow;
+    }
+
+    public JPanel manageMoneyWindow(){
+        JPanel moneyWindow = new JPanel(new BorderLayout());
+
+        JButton buttonAddMoney = new JButton("Add Money");
+        buttonAddMoney.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonAddMoney.setBackground(Color.GREEN);
+
+        JButton buttonReturn = new JButton("Return to Tools");
+        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonReturn.setBackground(Color.RED);
+
+        JPanel panelButtons = new JPanel(new GridLayout(1, 2, 10, 0));
+        panelButtons.add(buttonAddMoney);
+        panelButtons.add(buttonReturn);
+
+        buttonReturn.setSize(250, 100);
+        buttonAddMoney.setSize(250, 100);
+
+        panelButtons.setBorder(new EmptyBorder(20, 30, 20, 30));
+        moneyWindow.add(panelButtons, BorderLayout.SOUTH);
+
+        buttonReturn.addActionListener(e -> {
+            cardLayout.show(panel, "ToolWindow");
+        });
+
+        buttonAddMoney.addActionListener(e -> {
+            DB db = new DB();
+            try {
+                db.addMoney(100);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        return moneyWindow;
     }
 
 

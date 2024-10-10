@@ -33,8 +33,8 @@ public class DB {
         return connection;
     }
 
-    public float getMoney() throws SQLException {
-        float money = 0;
+    public double getMoney() throws SQLException {
+        double money = 0;
         Connection connection = setDB();
         Statement statement = connection.createStatement();
 
@@ -45,5 +45,19 @@ public class DB {
             money = resultSet.getFloat("money");
         }
         return money;
+    }
+
+    public void addMoney(double moneyAmount) throws SQLException {
+        try {
+            Connection connection = setDB();
+            Statement statement = connection.createStatement();
+
+            String query = "UPDATE user SET money = 1911";
+
+            int resultSet = statement.executeUpdate(query);
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
