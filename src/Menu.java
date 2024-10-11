@@ -28,6 +28,8 @@ public class Menu {
     // db
     DB db = new DB();
 
+    double actualMoney = db.getMoney();
+
     JButton moneyButton; // button for user money amount
 
     public Menu() throws SQLException {
@@ -129,7 +131,7 @@ public class Menu {
         GridLayout grid = new GridLayout(3, 3, 10, 10);
         toolWindow.setLayout(grid);
 
-        String[] buttonNames = {"Converter", "Add money", "button 3", "button 4", "e", "d", "d", "r", "Return to menu"};
+        String[] buttonNames = {"Converter", "Manage Money", "button 3", "button 4", "e", "d", "d", "r", "Return to menu"};
         Color[] colors = {Color.GREEN, Color.YELLOW, Color.WHITE, Color.BLUE, Color.PINK, Color.CYAN, Color.GRAY, Color.ORANGE, Color.RED};
         ActionListener[] eventListeners = {
                 e -> {
@@ -292,12 +294,16 @@ public class Menu {
         return converterWindow;
     }
 
-    public JPanel manageMoneyWindow(){
+    public JPanel manageMoneyWindow() throws SQLException{
         JPanel moneyWindow = new JPanel(new BorderLayout());
 
         JButton buttonAddMoney = new JButton("Add Money");
         buttonAddMoney.setFont(new Font(writingPolice, Font.BOLD, 30));
-        buttonAddMoney.setBackground(Color.GREEN);
+        buttonAddMoney.setBackground(new Color(0, 255, 0)); // color green
+
+        JButton buttonRemoveMoney = new JButton("Remove Money");
+        buttonRemoveMoney.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonRemoveMoney.setBackground(Color.ORANGE);
 
         JButton buttonReturn = new JButton("Return to Tools");
         buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
@@ -305,22 +311,60 @@ public class Menu {
 
         JPanel panelButtons = new JPanel(new GridLayout(1, 2, 10, 0));
         panelButtons.add(buttonAddMoney);
+        panelButtons.add(buttonRemoveMoney);
         panelButtons.add(buttonReturn);
 
-        buttonReturn.setSize(250, 100);
-        buttonAddMoney.setSize(250, 100);
+        //buttonReturn.setSize(250, 100);
+        //buttonAddMoney.setSize(250, 100);
 
         panelButtons.setBorder(new EmptyBorder(20, 30, 20, 30));
         moneyWindow.add(panelButtons, BorderLayout.SOUTH);
+
+        JTextArea amountMoneyArea = new JTextArea();
+        amountMoneyArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+        amountMoneyArea.setFont(new Font(writingPolice, Font.BOLD, 30));
+        moneyWindow.add(amountMoneyArea, BorderLayout.CENTER);
 
         buttonReturn.addActionListener(e -> {
             cardLayout.show(panel, "ToolWindow");
         });
 
-        buttonAddMoney.addActionListener(e -> {
+        buttonRemoveMoney.addActionListener(e -> {
+            if (amountMoneyArea.getText().isEmpty()){
+                JOptionPane.showMessageDialog(panel, "Please specify the amount you want to remove !");
+                return;
+            }
+            else if (Double.parseDouble(amountMoneyArea.getText()) < 0){
+                JOptionPane.showMessageDialog(panel, "Please enter a positive number !");
+                return;
+            }
+            else if (actualMoney < Double.parseDouble(amountMoneyArea.getText())){
+                JOptionPane.showMessageDialog(panel, "You don't have enough money !");
+                return;
+            }
+            
             DB db = new DB();
             try {
-                db.addMoney(100);
+                db.addMoney(-Double.parseDouble(amountMoneyArea.getText()));
+                reload();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        buttonAddMoney.addActionListener(e -> {
+            if (amountMoneyArea.getText().isEmpty()){
+                JOptionPane.showMessageDialog(panel, "Please specify the amount you want to add !");
+                return;
+            }
+            else if (Double.parseDouble(amountMoneyArea.getText()) < 0){
+                JOptionPane.showMessageDialog(panel, "Please enter a positive number !");
+                return;
+            }
+
+            DB db = new DB();
+            try {
+                db.addMoney(Double.parseDouble(amountMoneyArea.getText()));
                 reload();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
@@ -336,6 +380,7 @@ public class Menu {
         moneyButton.setText(userMoney + "$");
         panel.revalidate();
         panel.repaint();
+        this.actualMoney = db.getMoney(); // update the money
     }
 
 
@@ -350,5 +395,4 @@ public class Menu {
             }
         });
     }
-
 }

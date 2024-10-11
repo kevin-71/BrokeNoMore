@@ -34,27 +34,33 @@ public class DB {
     }
 
     public double getMoney() throws SQLException {
-        double money = 0;
-        Connection connection = setDB();
-        Statement statement = connection.createStatement();
+        try {
+            double money = 0;
+            Connection connection = setDB();
+            Statement statement = connection.createStatement();
 
-        String query = "SELECT money FROM user";
+            String query = "SELECT money FROM user";
 
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()) {
-            money = resultSet.getFloat("money");
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                money = resultSet.getFloat("money");
+            }
+            return money;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return money;
+        return 0;
     }
 
     public void addMoney(double moneyAmount) throws SQLException {
         try {
             Connection connection = setDB();
-            Statement statement = connection.createStatement();
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "UPDATE user SET money = money + ?"
+            );
+            preparedStatement.setDouble(1, moneyAmount);
 
-            String query = "UPDATE user SET money = 1900";
-
-            int resultSet = statement.executeUpdate(query);
+            preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
             e.printStackTrace();
