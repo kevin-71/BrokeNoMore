@@ -52,7 +52,7 @@ public class DB {
             Connection connection = setDB();
             Statement statement = connection.createStatement();
 
-            String query = "UPDATE user SET money = 1922";
+            String query = "UPDATE user SET money = 1900";
 
             int resultSet = statement.executeUpdate(query);
         }

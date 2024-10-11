@@ -28,12 +28,13 @@ public class Menu {
     // db
     DB db = new DB();
 
+    JButton moneyButton; // button for user money amount
 
     public Menu() throws SQLException {
         //set up frame
         frame = new JFrame("BrokeNoMore Manager");
         frame.setSize(this.windowX, this.windowY);
-        frame.setLocationRelativeTo(null); // put the frame on the middle of the frame
+        frame.setLocationRelativeTo(null); // put the frame in the middle of the frame
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -56,10 +57,7 @@ public class Menu {
         frame.setVisible(true);
     }
 
-
     public JPanel menuLauncher() throws SQLException {
-
-
 
         userMoneyDouble = db.getMoney();
         userMoney = String.format("%.2f", userMoneyDouble);
@@ -71,7 +69,7 @@ public class Menu {
         titleLabel.setFont(new Font(writingPolice, Font.BOLD, 30));
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER); // center the title
 
-        JButton moneyButton = new JButton(this.userMoney + "$");
+        moneyButton = new JButton(this.userMoney + "$");
         moneyButton.setFont(new Font(writingPolice, Font.PLAIN, 50));
         moneyButton.setBackground(Color.GREEN); // set color
 
@@ -323,6 +321,7 @@ public class Menu {
             DB db = new DB();
             try {
                 db.addMoney(100);
+                reload();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -331,10 +330,12 @@ public class Menu {
         return moneyWindow;
     }
 
-    public void updateMoneyButton(JButton moneyButton) throws SQLException {
+    public void reload() throws SQLException {
         userMoneyDouble = db.getMoney();
         userMoney = String.format("%.2f", userMoneyDouble);
-        moneyButton.setText(this.userMoney + "$");
+        moneyButton.setText(userMoney + "$");
+        panel.revalidate();
+        panel.repaint();
     }
 
 
