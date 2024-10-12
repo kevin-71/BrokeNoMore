@@ -46,7 +46,8 @@ public class DB {
                 money = resultSet.getFloat("money");
             }
             return money;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
         return 0;
@@ -63,6 +64,25 @@ public class DB {
             preparedStatement.executeUpdate();
         }
         catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void addLogs(double moneyBefore, double amount, String type, double moneyAfter, String notes) throws SQLException {
+        try{
+            Connection connection = setDB();
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "INSERT INTO logs(moneyBefore, amount, type, moneyAfter, notes) VALUES (?, ?, ?, ?, ?)"
+            );
+            preparedStatement.setDouble(1, moneyBefore);
+            preparedStatement.setDouble(2, amount);
+            preparedStatement.setString(3, type);
+            preparedStatement.setDouble(4, moneyAfter);
+            preparedStatement.setString(5, notes);
+
+            preparedStatement.executeUpdate();
+        }
+        catch(SQLException e){
             e.printStackTrace();
         }
     }

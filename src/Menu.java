@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.lang.Math.round;
 
@@ -48,12 +49,14 @@ public class Menu {
         JPanel moneyWindow = moneyWindow();
         JPanel converterWindow = converterWindow();
         JPanel manageMoneyWindow = manageMoneyWindow();
+        JPanel actionsWindow = actionsWindow();
 
         panel.add(menuLauncher, "MenuLauncher");
         panel.add(toolWindow, "ToolWindow");
         panel.add(moneyWindow, "MoneyWindow");
         panel.add(converterWindow, "ConverterWindow");
         panel.add(manageMoneyWindow, "manageMoneyWindow");
+        panel.add(actionsWindow, "actionsWindow");
         frame.add(panel);
 
         frame.setVisible(true);
@@ -131,7 +134,7 @@ public class Menu {
         GridLayout grid = new GridLayout(3, 3, 10, 10);
         toolWindow.setLayout(grid);
 
-        String[] buttonNames = {"Converter", "Manage Money", "button 3", "button 4", "e", "d", "d", "r", "Return to menu"};
+        String[] buttonNames = {"Converter", "Manage Money", "Actions", "button 4", "e", "d", "d", "r", "Return to menu"};
         Color[] colors = {Color.GREEN, Color.YELLOW, Color.WHITE, Color.BLUE, Color.PINK, Color.CYAN, Color.GRAY, Color.ORANGE, Color.RED};
         ActionListener[] eventListeners = {
                 e -> {
@@ -141,7 +144,9 @@ public class Menu {
                 e -> {
                     cardLayout.show(panel, "manageMoneyWindow");
                 },
-                e -> System.out.println("Button 3 clicked"),
+                e -> {
+                    cardLayout.show(panel, "actionsWindow");
+                },
                 e -> System.out.println("Button 4 clicked"),
                 e -> System.out.println("Button e clicked"),
                 e -> System.out.println("Button d clicked"),
@@ -264,8 +269,8 @@ public class Menu {
             if (textArea.getText().isEmpty()){
                 return;
             }
-            else if (textArea2.getText().matches("[a-zA-Z]+")){
-                textArea2.setText("Put only numbers !"); // doesnt' work
+            else if (textArea2.getText().matches("[a-zA-Z]+")){ // this doesnt' work
+                textArea2.setText("Put only numbers !");
             }
 
             Map<String, Double> conversionRates = new HashMap<>();
@@ -342,7 +347,7 @@ public class Menu {
                 JOptionPane.showMessageDialog(panel, "You don't have enough money !");
                 return;
             }
-            
+
             DB db = new DB();
             try {
                 db.addMoney(-Double.parseDouble(amountMoneyArea.getText()));
@@ -374,6 +379,126 @@ public class Menu {
         return moneyWindow;
     }
 
+    public JPanel actionsWindow() throws SQLException {
+        JPanel actionsWindow = new JPanel(new BorderLayout(20,20));
+
+        JButton buttonLog = new JButton("Log Action");
+        buttonLog.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonLog.setBackground(new Color(0, 255, 0)); // green
+
+        JButton buttonReturn = new JButton("Return to Tools");
+        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonReturn.setBackground(Color.RED);
+
+        JPanel panelButtons = new JPanel(new GridLayout(1, 2, 10, 0));
+        panelButtons.add(buttonLog);
+        panelButtons.add(buttonReturn);
+        panelButtons.setBorder(new EmptyBorder(20, 30, 20, 30));
+
+        actionsWindow.add(panelButtons, BorderLayout.SOUTH);
+
+        JTextArea amountMoneyArea = new JTextArea();
+        amountMoneyArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+        amountMoneyArea.setFont(new Font(writingPolice, Font.BOLD, 30));
+
+        String[] typeTransaction = {"Deposit", "Withdraw"};
+        JComboBox<String> typeBox = new JComboBox<>(typeTransaction);
+        typeBox.setFont(new Font(writingPolice, Font.BOLD, 30));
+
+        JTextArea transactionNotesArea = new JTextArea();
+        transactionNotesArea.setBorder(BorderFactory.createLineBorder(Color.BLACK, 5, true));
+        transactionNotesArea.setFont(new Font(writingPolice, Font.BOLD, 30));
+
+        JPanel panelActions = new JPanel(new GridLayout(3, 2, 2, 20));
+        panelActions.add(new JLabel("Amount:"));
+        panelActions.add(amountMoneyArea);
+        panelActions.add(new JLabel("Notes:"));
+        panelActions.add(transactionNotesArea);
+        panelActions.add(new JLabel("Transaction Type:"));
+        panelActions.add(typeBox);
+
+        actionsWindow.add(panelActions, BorderLayout.CENTER);
+
+
+        buttonReturn.addActionListener(e -> {
+            cardLayout.show(panel, "ToolWindow");
+        });
+
+        buttonLog.addActionListener(e -> {
+            double moneyBefore = 0;
+            double transactionAmount = Double.parseDouble(amountMoneyArea.getText());
+            double moneyAfter = 0;
+            String notes = transactionNotesArea.getText();
+            String type = typeBox.getSelectedItem().toString();
+
+            try {
+                reload();
+                moneyBefore = db.getMoney();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            if (amountMoneyArea.getText().isEmpty() || transactionNotesArea.getText().isEmpty()){
+                JOptionPane.showMessageDialog(panel, "Please fill all the fields !");
+                return;
+            }
+            if (transactionAmount < 0){
+                JOptionPane.showMessageDialog(panel, "Please enter a positive amount of money !");
+                return;
+            }
+            try {
+                if (Objects.equals(type, "Deposit") && transactionAmount > db.getMoney()){
+                    JOptionPane.showMessageDialog(panel, "You can't deposit this amount as you don't have enough money !");
+                    return;
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            if (type == "Deposit"){
+                moneyAfter = moneyBefore + transactionAmount;
+                try {
+                    db.addMoney(transactionAmount);
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            else if (type == "Withdraw"){
+                moneyAfter = moneyBefore - transactionAmount;
+                try {
+                    db.addMoney(-transactionAmount);
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            try {
+                db.addLogs(moneyBefore, transactionAmount, type, moneyAfter, notes);
+            }
+            catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            try {
+                reload();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            if (type == "Deposit"){
+                JOptionPane.showMessageDialog(panel, "Successfully deposit " + transactionAmount + "$ ! You have now " + String.format("%.2f", moneyAfter) + "$ !");
+            }
+
+            if (type == "Withdraw"){
+                JOptionPane.showMessageDialog(panel, "Successful withdraw " + transactionAmount + "$ ! You have now " + String.format("%.2f", moneyAfter) + "$ !");
+            }
+
+            amountMoneyArea.setText("");
+            transactionNotesArea.setText("");
+
+        });
+
+        return actionsWindow;
+    }
+
     public void reload() throws SQLException {
         userMoneyDouble = db.getMoney();
         userMoney = String.format("%.2f", userMoneyDouble);
@@ -396,3 +521,11 @@ public class Menu {
         });
     }
 }
+
+
+/*
+            String moneyString = moneyButton.getText();
+            int dollarSignIndex = moneyString.length() - 1; // get index of "$" character
+            moneyString = moneyString.substring(0, dollarSignIndex);
+            moneyString = moneyString.replace(",", "."); // replace , by .
+ */
