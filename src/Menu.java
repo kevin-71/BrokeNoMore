@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.time.*;
 
 import static java.lang.Math.round;
 
@@ -50,6 +51,7 @@ public class Menu {
         JPanel moneyWindow = moneyWindow();
         JPanel converterWindow = converterWindow();
         JPanel manageMoneyWindow = manageMoneyWindow();
+        //JPanel monthlyReportWindow = monthlyReportWindow();
         JPanel actionsWindow = actionsWindow();
         JPanel historyWindow = historyWindow();
 
@@ -551,6 +553,10 @@ public class Menu {
         return historyWindow;
     }
 
+    /*public JPanel monthlyReportWindow() throws SQLException {
+
+    }*/
+
 
     public void reload() throws SQLException {
         userMoneyDouble = db.getMoney();
@@ -561,6 +567,15 @@ public class Menu {
         this.actualMoney = db.getMoney(); // update the money
     }
 
+
+
+    /*public void monthlyReportCheck() {
+        LocalDate date = LocalDate.now();
+        int dayOfMonth = date.getDayOfMonth();
+        if (dayOfMonth == 01){
+
+        }
+    }*/
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
