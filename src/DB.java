@@ -1,6 +1,8 @@
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class DB {
@@ -86,4 +88,48 @@ public class DB {
             e.printStackTrace();
         }
     }
+
+    public List<List<String>> getHistory() throws SQLException {
+
+        try {
+            List<String> line; // list of String
+            List<List<String>> allData = new ArrayList<>(); // list of a list of String
+
+            Connection connection = setDB();
+
+            Statement statement = connection.createStatement();
+
+            String query = "SELECT * FROM logs";
+
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                line = new ArrayList<>();
+
+                String id = resultSet.getString("id"); // get query responses
+                String moneyBefore = resultSet.getString("moneyBefore");
+                String amount = resultSet.getString("amount");
+                String type = resultSet.getString("type");
+                String moneyAfter = resultSet.getString("moneyAfter");
+                String time = resultSet.getString("timestamp");
+                String notes = resultSet.getString("notes");
+
+                line.add(id); // add all response to query in the list that represent the row
+                line.add(moneyBefore);
+                line.add(amount);
+                line.add(type);
+                line.add(moneyAfter);
+                line.add(time);
+                line.add(notes);
+
+                allData.add(line); // add it in the list of a list, that represent all the rows and the column of our table logs
+            }
+            return allData;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>(); // if there is a problem, return an empty list of list
+    }
+
 }

@@ -7,6 +7,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -50,6 +51,7 @@ public class Menu {
         JPanel converterWindow = converterWindow();
         JPanel manageMoneyWindow = manageMoneyWindow();
         JPanel actionsWindow = actionsWindow();
+        JPanel historyWindow = historyWindow();
 
         panel.add(menuLauncher, "MenuLauncher");
         panel.add(toolWindow, "ToolWindow");
@@ -57,6 +59,7 @@ public class Menu {
         panel.add(converterWindow, "ConverterWindow");
         panel.add(manageMoneyWindow, "manageMoneyWindow");
         panel.add(actionsWindow, "actionsWindow");
+        panel.add(historyWindow, "historyWindow");
         frame.add(panel);
 
         frame.setVisible(true);
@@ -134,8 +137,8 @@ public class Menu {
         GridLayout grid = new GridLayout(3, 3, 10, 10);
         toolWindow.setLayout(grid);
 
-        String[] buttonNames = {"Converter", "Manage Money", "Actions", "button 4", "e", "d", "d", "r", "Return to menu"};
-        Color[] colors = {Color.GREEN, Color.YELLOW, Color.WHITE, Color.BLUE, Color.PINK, Color.CYAN, Color.GRAY, Color.ORANGE, Color.RED};
+        String[] buttonNames = {"Converter", "Manage Money", "Actions", "History", "e", "d", "d", "r", "Return to menu"};
+        Color[] colors = {Color.GREEN, Color.YELLOW, Color.GRAY, Color.ORANGE, Color.PINK, Color.CYAN, Color.GRAY, Color.ORANGE, Color.RED};
         ActionListener[] eventListeners = {
                 e -> {
                     cardLayout.show(panel, "ConverterWindow");
@@ -144,10 +147,15 @@ public class Menu {
                 e -> {
                     cardLayout.show(panel, "manageMoneyWindow");
                 },
+
                 e -> {
                     cardLayout.show(panel, "actionsWindow");
                 },
-                e -> System.out.println("Button 4 clicked"),
+
+                e -> {
+                    cardLayout.show(panel, "historyWindow");
+                },
+
                 e -> System.out.println("Button e clicked"),
                 e -> System.out.println("Button d clicked"),
                 e -> System.out.println("Button d clicked"),
@@ -446,7 +454,7 @@ public class Menu {
                 return;
             }
             try {
-                if (Objects.equals(type, "Deposit") && transactionAmount > db.getMoney()){
+                if (Objects.equals(type, "Withdraw") && transactionAmount > db.getMoney()){
                     JOptionPane.showMessageDialog(panel, "You can't deposit this amount as you don't have enough money !");
                     return;
                 }
@@ -498,6 +506,51 @@ public class Menu {
 
         return actionsWindow;
     }
+
+    public JPanel historyWindow() throws SQLException {
+        JPanel historyWindow = new JPanel(new BorderLayout(20, 20));
+
+        JButton buttonReturn = new JButton("Return to Tools");
+        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonReturn.setBackground(Color.RED);
+
+        JPanel panelButtons = new JPanel(new GridLayout(1, 2, 10, 0));
+        panelButtons.add(buttonReturn);
+        panelButtons.setBorder(new EmptyBorder(20, 30, 20, 30));
+
+        historyWindow.add(panelButtons, BorderLayout.SOUTH);
+
+        JPanel historyPanel = new JPanel();
+        historyPanel.setLayout(new BoxLayout(historyPanel, BoxLayout.Y_AXIS));
+
+        JScrollPane scrollPane = new JScrollPane(historyPanel);
+        historyWindow.add(scrollPane, BorderLayout.CENTER);
+
+
+        try {
+            List<List<String>> history = db.getHistory();
+
+            for (List<String> row : history) {
+                JPanel rowPanel = new JPanel(new GridLayout(1, 7, 5, 0));
+
+                for (String data : row) {
+                    JLabel label = new JLabel(data);
+                    rowPanel.add(label);
+                }
+
+                historyPanel.add(rowPanel);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        buttonReturn.addActionListener(e -> {
+            cardLayout.show(panel, "ToolWindow");
+        });
+
+        return historyWindow;
+    }
+
 
     public void reload() throws SQLException {
         userMoneyDouble = db.getMoney();
