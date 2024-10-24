@@ -12,7 +12,7 @@ public class DB {
 
     public String[] GetDbInfo(){
         Properties props = new Properties();
-        try (FileInputStream fis = new FileInputStream("Project\\BrokeNoMore\\config.properties")) { // get file
+        try (FileInputStream fis = new FileInputStream("../config.properties")) { // get file
             props.load(fis);
         } catch (IOException e) { // check errors
             e.printStackTrace();
@@ -196,8 +196,8 @@ public class DB {
         String formattedMinusMonthDate = minusMonthDate.format(standardDateFormat);
 
         try {
-            int income = 1;
-            int expanses = -1;
+            double income = 1;
+            double expanses = -1;
             Connection connection = setDB();
 
             Statement statement = connection.createStatement();
@@ -209,7 +209,7 @@ public class DB {
             while (resultSet.next()) {
 
                 String amount = resultSet.getString("amount");
-                int convertedAmount = Integer.parseInt(amount);
+                double convertedAmount = Double.parseDouble(amount);
                 String type = resultSet.getString("type");
                 if (type.equals("Deposit")){
                     income += convertedAmount;

@@ -1,17 +1,17 @@
 final class IntegerPair {
-    public final int first;
-    public final int second;
+    public final double first;
+    public final double second;
 
-    public IntegerPair(int first, int second) {
+    public IntegerPair(double first, double second) {
         this.first = first;
         this.second = second;
     }
 
-    public int getFirst() {
+    public double getFirst() {
         return first;
     }
 
-    public int getSecond() {
+    public double getSecond() {
         return second;
     }
 }

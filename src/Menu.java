@@ -1,7 +1,7 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import javafx.scene.chart.PieChart;
+//import javafx.scene.chart.PieChart;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -230,10 +230,13 @@ public class Menu {
         return toolWindow;
     }
 
-    public JPanel monthlyReportWindow() throws SQLException{
+    public JPanel monthlyReportWindow() throws SQLException {
         JPanel monthlyReportWindow = new JPanel(new BorderLayout());
         LocalDate today = LocalDate.now();
         IntegerPair results = db.getMonthlyHistory(today);
+
+        System.out.println(results.getFirst());
+        System.out.println(results.getSecond());
 
         JButton buttonReturn = new JButton("Return to Menu");
         buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
@@ -271,18 +274,23 @@ public class Menu {
                 g2d.setColor(Color.GREEN);
                 g2d.fillRect(50, height - incomeBarHeight - 30, width, incomeBarHeight);
 
-                // Draw expenses bar (red)
+                // Draw labels
                 g2d.setColor(Color.RED);
                 g2d.fillRect(200, height - expenseBarHeight - 30, width, expenseBarHeight);
 
-                // Draw labels
+                // Draw expenses bar (red)
                 g2d.setColor(Color.BLACK);
                 g2d.drawString("Income", 70, height - 10);
                 g2d.drawString("Expenses", 220, height - 10);
+
+                // print value above charts
+                g2d.setColor(Color.BLACK);
+                g2d.drawString(String.valueOf(income), 70, height - incomeBarHeight - 40); // position above the income bar
+                g2d.drawString(String.valueOf(expenses), 220, height - expenseBarHeight - 40);
             }
         }
 
-        JPanel barChartPanel = new BarChart(results.first, results.second);
+        JPanel barChartPanel = new BarChart(results.getFirst(), results.getSecond());
         monthlyReportWindow.add(buttonReturn, BorderLayout.SOUTH);
         monthlyReportWindow.add(barChartPanel, BorderLayout.CENTER);
         return monthlyReportWindow;
