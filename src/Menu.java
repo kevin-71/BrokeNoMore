@@ -250,9 +250,6 @@ public class Menu {
         LocalDate today = LocalDate.now();
         IntegerPair results = db.getMonthlyHistory(today);
 
-        System.out.println(results.getFirst());
-        System.out.println(results.getSecond());
-
         JButton buttonReturn = new JButton("Return to Menu");
         buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
         buttonReturn.setBackground(colorBrown);
@@ -928,11 +925,6 @@ public class Menu {
 
         today = LocalDate.now();
         results = db.getMonthlyHistory(today);
-
-        System.out.println(today);
-
-        System.out.println(results.getFirst());
-        System.out.println(results.getSecond());
 
         JButton buttonReturn = new JButton("Return to Menu");
         buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
