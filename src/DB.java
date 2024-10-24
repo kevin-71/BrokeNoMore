@@ -202,7 +202,7 @@ public class DB {
 
             Statement statement = connection.createStatement();
 
-            String query = "SELECT * FROM logs WHERE timestamp BETWEEN '" + formattedMinusMonthDate + "' AND '" + formattedDate + "'"; // query to select all records from logs table
+            String query = "SELECT * FROM logs WHERE timestamp BETWEEN '" + formattedMinusMonthDate + "' AND '" + formattedDate + " 23:59:59'"; // query to select all records from logs table
 
             ResultSet resultSet = statement.executeQuery(query);
 
