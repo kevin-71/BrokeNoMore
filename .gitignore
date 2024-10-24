@@ -31,3 +31,6 @@ bin/
 
 # db user + pass
 config.properties
+
+# Test Code
+TestCode.java

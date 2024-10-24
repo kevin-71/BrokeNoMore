@@ -1,5 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
+import javafx.scene.chart.PieChart;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -63,7 +66,7 @@ public class Menu {
         JPanel toolWindow = toolWindow();
         JPanel moneyWindow = moneyWindow();
         JPanel converterWindow = converterWindow();
-        //JPanel monthlyReportWindow = monthlyReportWindow();
+        JPanel monthlyReportWindow = monthlyReportWindow();
         JPanel actionsWindow = actionsWindow();
         JPanel historyWindow = historyWindow();
         JPanel limitWindow = limitWindow();
@@ -77,6 +80,7 @@ public class Menu {
         panel.add(historyWindow, "historyWindow");
         panel.add(limitWindow, "limitWindow");
         panel.add(budgetWindow, "budgetWindow");
+        panel.add(monthlyReportWindow, "MonthlyReportWindow");
         frame.add(panel);
 
         frame.setVisible(true);
@@ -97,6 +101,7 @@ public class Menu {
         moneyButton = new JButton(this.userMoney + "$"); // label where the amount of money is displayed "button" because we need to click on it
         moneyButton.setFont(new Font(writingPolice, Font.PLAIN, 50));
         moneyButton.setBackground(new Color(255, 239, 213)); // set color
+        moneyButton.setHorizontalAlignment(SwingConstants.CENTER);
 
         if (db.getMoney() < 0){
             moneyButton.setBorder(BorderFactory.createLineBorder(Color.RED, 5, true));
@@ -109,9 +114,17 @@ public class Menu {
         panelBalance.setLayout(new BoxLayout(panelBalance, BoxLayout.Y_AXIS));
         panelBalance.add(titleLabel);
 
+        // monthly report button
+        JButton monthlyReportButton = new JButton("Monthly Report");
+        monthlyReportButton.setFont(new Font(writingPolice, Font.BOLD, 30));
+        monthlyReportButton.setBackground(new Color(100,120,245));
+
         // add some spacing between the label and button
-        panelBalance.add(Box.createVerticalStrut(10));
+        panelBalance.add(Box.createVerticalStrut(5));
         panelBalance.add(moneyButton);
+        panelBalance.add(monthlyReportButton);
+
+
 
         // align components to the center
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -152,6 +165,10 @@ public class Menu {
         buttonClose.addActionListener(e -> {
             frame.dispose();
             System.exit(0); // stop the Java program from running
+        });
+
+        monthlyReportButton.addActionListener(e -> {
+            cardLayout.show(panel, "MonthlyReportWindow");
         });
         return menuLauncher;
     }
@@ -211,6 +228,64 @@ public class Menu {
         }
         //frame.setVisible(true);
         return toolWindow;
+    }
+
+    public JPanel monthlyReportWindow() throws SQLException{
+        JPanel monthlyReportWindow = new JPanel(new BorderLayout());
+        LocalDate today = LocalDate.now();
+        IntegerPair results = db.getMonthlyHistory(today);
+
+        JButton buttonReturn = new JButton("Return to Menu");
+        buttonReturn.setFont(new Font(writingPolice, Font.BOLD, 30));
+        buttonReturn.setBackground(colorBrown);
+
+        buttonReturn.addActionListener(eventListeners -> {
+            cardLayout.show(panel, "MenuLauncher");
+        });
+
+        class BarChart extends JPanel {
+            private double income;
+            private double expenses;
+
+            public BarChart(double income, double expenses) {
+                this.income = income;
+                this.expenses = expenses;
+                setPreferredSize(new Dimension(300, 300));
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+
+                int width = 100; // Width of each bar
+                int height = getHeight();
+                int maxBarHeight = height - 50; // Leave some space at the top and bottom
+
+                // Calculate the height of income and expense bars based on the total
+                double total = income + Math.abs(expenses);
+                int incomeBarHeight = (int) (income / total * maxBarHeight);
+                int expenseBarHeight = (int) (Math.abs(expenses) / total * maxBarHeight);
+
+                // Draw income bar (green)
+                g2d.setColor(Color.GREEN);
+                g2d.fillRect(50, height - incomeBarHeight - 30, width, incomeBarHeight);
+
+                // Draw expenses bar (red)
+                g2d.setColor(Color.RED);
+                g2d.fillRect(200, height - expenseBarHeight - 30, width, expenseBarHeight);
+
+                // Draw labels
+                g2d.setColor(Color.BLACK);
+                g2d.drawString("Income", 70, height - 10);
+                g2d.drawString("Expenses", 220, height - 10);
+            }
+        }
+
+        JPanel barChartPanel = new BarChart(results.first, results.second);
+        monthlyReportWindow.add(buttonReturn, BorderLayout.SOUTH);
+        monthlyReportWindow.add(barChartPanel, BorderLayout.CENTER);
+        return monthlyReportWindow;
     }
 
     public JPanel moneyWindow(){
@@ -654,19 +729,19 @@ public class Menu {
 
         // Create 2 labels with corresponding text areas
         // LABELS
-        JLabel limitArea = new JLabel("Set new limit", JLabel.CENTER); // Center the label text
-        limitArea.setFont(new Font(writingPolice, Font.BOLD, 30));
-        limitArea.setVerticalAlignment(JLabel.CENTER); // Align vertically to center with the text fields
+        JLabel budgetArea = new JLabel("Set new budget", JLabel.CENTER); // Center the label text
+        budgetArea.setFont(new Font(writingPolice, Font.BOLD, 30));
+        budgetArea.setVerticalAlignment(JLabel.CENTER); // Align vertically to center with the text fields
 
-        JLabel limitAreaDisplay = new JLabel("Current limit", JLabel.CENTER); // Center the label text
-        limitAreaDisplay.setFont(new Font(writingPolice, Font.BOLD, 30));
-        limitAreaDisplay.setVerticalAlignment(JLabel.CENTER); // Align vertically to center with the text fields
+        JLabel budgetAreaDisplay = new JLabel("Current budget", JLabel.CENTER); // Center the label text
+        budgetAreaDisplay.setFont(new Font(writingPolice, Font.BOLD, 30));
+        budgetAreaDisplay.setVerticalAlignment(JLabel.CENTER); // Align vertically to center with the text fields
 
         // Text AREAS
         JTextField newBudget = new JTextField();
         newBudget.setFont(new Font(writingPolice, Font.BOLD, 30));
         currentBudget = new JTextField();
-        currentBudget.setFont(new Font(writingPolice, Font.BOLD, 30)); //show the current limit
+        currentBudget.setFont(new Font(writingPolice, Font.BOLD, 30)); //show the current budget
         newBudget.setBorder(BorderFactory.createLineBorder(Color.black, 5, true));
         currentBudget.setBorder(BorderFactory.createLineBorder(Color.black, 5, true));
 
@@ -675,7 +750,7 @@ public class Menu {
 
         currentBudget.setEditable(false);
         // Buttons
-        JButton buttonSetBudget = new JButton("Set Limit");
+        JButton buttonSetBudget = new JButton("Set budget");
         buttonSetBudget.setFont(new Font(writingPolice, Font.BOLD, 30));
         buttonSetBudget.setBackground(beigeParchemin);
 
@@ -686,8 +761,8 @@ public class Menu {
 
 
         // Add labels, text fields, and buttons to the panel
-        budgetWindow.add(limitArea);
-        budgetWindow.add(limitAreaDisplay);
+        budgetWindow.add(budgetArea);
+        budgetWindow.add(budgetAreaDisplay);
         budgetWindow.add(newBudget);
         budgetWindow.add(currentBudget);
         budgetWindow.add(buttonSetBudget);
@@ -833,16 +908,6 @@ public class Menu {
     public void infoMessage(String message){
         JOptionPane.showMessageDialog(panel, "INFO : " + message);
     }
-
-
-
-    /*public void monthlyReportCheck() {
-        LocalDate date = LocalDate.now();
-        int dayOfMonth = date.getDayOfMonth();
-        if (dayOfMonth == 01){
-
-        }
-    }*/
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
