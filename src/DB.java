@@ -202,7 +202,7 @@ public class DB {
 
             Statement statement = connection.createStatement();
 
-            String query = "SELECT * FROM logs WHERE timestamp BETWEEN '" + formattedDate + "' AND '" + formattedMinusMonthDate + "'"; // query to select all records from logs table
+            String query = "SELECT * FROM logs WHERE timestamp BETWEEN '" + formattedMinusMonthDate + "' AND '" + formattedDate + "'"; // query to select all records from logs table
 
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -216,7 +216,7 @@ public class DB {
                 } else {
                     expanses += convertedAmount;
                 }
-            }  
+            }
             return new IntegerPair(income, expanses);
 
         } catch (SQLException e) {
